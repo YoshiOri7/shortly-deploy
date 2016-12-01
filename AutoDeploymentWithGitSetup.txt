@@ -1,3 +1,5 @@
+
+
 ssh root@159.203.204.26
 password: see email
 
@@ -30,5 +32,12 @@ git remote add live ssh://root@159.203.204.26/root/repo/site.git
 // make some changes to our files on the local machine
 git add .
 git commit
+
+git push live master
+
+
+// Deploy =====================================================
+git add . 
+git commit 
 
 git push live master
