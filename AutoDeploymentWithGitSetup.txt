@@ -1,0 +1,34 @@
+ssh root@159.203.204.26
+password: see email
+
+https://www.digitalocean.com/community/tutorials/how-to-set-up-automatic-deployment-with-git-with-a-vps
+// Server =====================================================
+
+mkdir repo && cd repo
+mkdir site.git && cd site.git
+git init --bare
+
+
+ls (check to see if hooks exist)
+cd hooks
+
+cat > post-receive
+#!/bin/sh
+git --work-tree=/root/shortly-deploy/ --git-dir=/root/repo/site.git checkout -f
+'ctr d' to save
+
+chmod +x post-receive
+
+// Local Machine =====================================================
+/Users/student/Desktop/hrsf51-shortly-deploy
+
+mkdir project && cd project
+git init
+
+git remote add live ssh://root@159.203.204.26/root/repo/site.git
+
+// make some changes to our files on the local machine
+git add .
+git commit
+
+git push live master
