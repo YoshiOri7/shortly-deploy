@@ -16,13 +16,35 @@
 //   }
 // });
 
+
 // module.exports = Link;
+var crypto = require('crypto');
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var dbSchema = require('../config.js');
+// Use bluebird
+mongoose.Promise = require('bluebird');
 
+var urlSchema = new Schema({
+  url: String,
+  baseUrl: String,
+  code: String,
+  title: String,
+  visits: {type: Number, default: 0},
+  created_at: Date,
+  updated_at: Date
+});
 
-var Link = mongoose.model('Link', dbSchema.urlSchema);
+urlSchema.pre('save', function(next){
+
+  var shasum = crypto.createHash('sha1');
+  shasum.update( this.url );
+  this.code = shasum.digest('hex').slice(0, 5);
+
+  next();
+});
+
+var Link = mongoose.model('Link', urlSchema);
 
 module.exports = Link;
 

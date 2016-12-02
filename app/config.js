@@ -42,34 +42,24 @@
 
 // ========================================================================
 var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
 
-var dbSchema = {};
+var db = mongoose.connection;
 
-// create a schema
-var userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  created_at: Date,
-  updated_at: Date
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  // create a schema
+  console.log('connection open');
+
 });
 
-// the schema is useless so far
-// we need to create a model using it
-dbSchema.userSchema = userSchema;
+mongoose.connect('mongodb://localhost/test');
 
+// console.log(process.env.DATABASEURL)
+// var url = process.env.DATABASEURL || 'mongodb://localhost/test'; 
+// mongoose.connect(url);
 
-var urlSchema = new Schema({
-  url: String,
-  baseUrl: String,
-  code: String,
-  title: String,
-  visits: {type: Number, default: 0},
-  created_at: Date,
-  updated_at: Date
-});
+// var dbSchema = {};
+// dbSchema.userSchema = userSchema;
+// dbSchema.urlSchema = urlSchema;
 
-dbSchema.urlSchema = urlSchema;
-
-// make this available to our users in our Node applications
-module.exports = dbSchema;
+module.exports = db;

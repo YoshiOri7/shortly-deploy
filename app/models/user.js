@@ -23,12 +23,34 @@
 // });
 
 // module.exports = User;
+var Promise = require('bluebird');
+var bcrypt = require('bcrypt-nodejs');
 var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-var dbSchema = require('../config.js');
+// Use bluebird
+mongoose.Promise = require('bluebird');
+
+var userSchema = new Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  created_at: Date,
+  updated_at: Date
+});
+
+userSchema.pre('save', function(next) {
+
+  var cipher = Promise.promisify(bcrypt.hash);
+  
+  cipher(this.password, null, null)
+  .then(function(hash) {
+    this.password = hash;
+  });
 
 
+  next();
+});
 
-var User = mongoose.model('User', dbSchema.userSchema);
+var User = mongoose.model('User', userSchema);
 
 module.exports = User;
